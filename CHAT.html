@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Form with Telegram Bot</title>
+    <style>
+        /* Basic styles for the form */
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .form-container {
+            max-width: 400px;
+            margin: auto;
+            background-color: #f4f4f4;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        #sendButton {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #sendButton:hover {
+            background-color: #45a049;
+        }
+
+        .toast {
+            visibility: hidden;
+            min-width: 250px;
+            margin-left: -125px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 2px;
+            padding: 10px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            bottom: 30px;
+            font-size: 17px;
+        }
+
+        .show {
+            visibility: visible;
+            animation: fadeInOut 3s;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <h2>Contact Us</h2>
+        <form id="contactForm">
+            <input type="text" id="name" placeholder="Your Name" required><br>
+            <input type="email" id="email" placeholder="Your Email" required><br>
+            <textarea id="message" placeholder="Your Message" rows="4" required></textarea><br>
+            <button type="button" id="sendButton">Send Message</button>
+        </form>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">Message Sent Successfully!</div>
+
+    <script>
+        document.getElementById('sendButton').addEventListener('click', function () {
+            var name = document.getElementById('name').value;
+            var email = document.getElementById('email').value;
+            var message = document.getElementById('message').value;
+            var chatId = '1695038725'; // Your Telegram chat ID
+            var botToken = '7808200583:AAGTQQaryZ0GB5x-BuOsZgMhtzf0IOMpgc4'; // Your Telegram bot token
+            var text = `Name: ${name}\nEmail: ${email}\nMessage: ${message}`;
+            var url = `https://api.telegram.org/bot${botToken}/sendMessage?text=${encodeURIComponent(text)}&chat_id=${chatId}`;
+
+            fetch(url)
+                .then(response => {
+                    if (response.ok) {
+                        // Show the toast notification
+                        var toast = document.getElementById('toast');
+                        toast.className = 'show';
+                        setTimeout(function () { toast.className = toast.className.replace('show', ''); }, 3000);
+
+                        // Clear the input fields
+                        document.getElementById('name').value = '';
+                        document.getElementById('email').value = '';
+                        document.getElementById('message').value = '';
+                    } else {
+                        alert('There was a problem sending the message.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('There was a problem sending the message.');
+                });
+        });
+    </script>
+
+</body>
+</html>
